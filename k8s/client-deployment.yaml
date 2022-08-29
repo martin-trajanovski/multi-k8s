@@ -15,9 +15,5 @@ spec:
       containers:
         - name: client
           image: ghcr.io/martin-trajanovski/multi-k8s-client
-          resources:
-            limits:
-              memory: '128Mi'
-              cpu: '500m'
           ports:
             - containerPort: 3000
