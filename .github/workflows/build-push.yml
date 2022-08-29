@@ -1,8 +1,13 @@
-name: Build and push
+name: Build and Deploy to GKE
 
 on:
   push:
     branches: [master]
+
+env:
+  GKE_CLUSTER: multi-cluster # Add your cluster name here.
+  GKE_ZONE: europe-north1-a # Add your cluster zone here.
+  DEPLOYMENT_NAME: gke-test # Add your deployment name here.
 
 jobs:
   build:
@@ -41,3 +46,35 @@ jobs:
           file: ./worker/Dockerfile
           push: true
           tags: ghcr.io/martin-trajanovski/multi-k8s-worker:latest
+
+  deploy:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: 'read'
+      id-token: 'write'
+    steps:
+      - uses: actions/checkout@v3
+
+      - id: 'auth'
+        name: 'Authenticate to Google Cloud'
+        uses: 'google-github-actions/auth@v0'
+        with:
+          credentials_json: '${{ secrets.GOOGLE_CREDENTIALS }}'
+
+      # Setup gcloud CLI
+      - name: 'Set up Cloud SDK'
+        uses: 'google-github-actions/setup-gcloud@v0'
+
+      - name: 'Use gcloud CLI'
+        run: 'gcloud info'
+
+      # Get the GKE credentials so we can deploy to the cluster
+      - id: 'get-credentials'
+        uses: 'google-github-actions/get-gke-credentials@v0'
+        with:
+          cluster_name: ${{ env.GKE_CLUSTER }}
+          location: ${{ env.GKE_ZONE }}
+
+      # The KUBECONFIG env var is automatically exported and picked up by kubectl.
+      - id: 'get-pods'
+        run: 'kubectl get pods'
