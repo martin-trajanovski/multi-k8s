@@ -26,18 +26,18 @@ jobs:
           context: ./client
           file: ./client/Dockerfile
           push: true
-          tags: ghcr.io/martin-trajanovski/client:latest
+          tags: ghcr.io/martin-trajanovski/multi-k8s-client:latest
       - name: Build and push server
         uses: docker/build-push-action@v3
         with:
           context: ./server
           file: ./server/Dockerfile
           push: true
-          tags: ghcr.io/martin-trajanovski/server:latest
+          tags: ghcr.io/martin-trajanovski/multi-k8s-server:latest
       - name: Build and push worker
         uses: docker/build-push-action@v3
         with:
           context: ./worker
           file: ./worker/Dockerfile
           push: true
-          tags: ghcr.io/martin-trajanovski/worker:latest
+          tags: ghcr.io/martin-trajanovski/multi-k8s-worker:latest
