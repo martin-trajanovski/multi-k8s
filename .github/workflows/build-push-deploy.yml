@@ -26,21 +26,27 @@ jobs:
           context: ./client
           file: ./client/Dockerfile
           push: true
-          tags: ghcr.io/martin-trajanovski/multi-k8s-client:latest
+          tags: |
+            ghcr.io/martin-trajanovski/multi-k8s-client:latest
+            ghcr.io/martin-trajanovski/multi-k8s-client:${{ github.sha }}
       - name: Build and push server
         uses: docker/build-push-action@v3
         with:
           context: ./server
           file: ./server/Dockerfile
           push: true
-          tags: ghcr.io/martin-trajanovski/multi-k8s-server:latest
+          tags: |
+            ghcr.io/martin-trajanovski/multi-k8s-server:latest
+            ghcr.io/martin-trajanovski/multi-k8s-server:${{ github.sha }}
       - name: Build and push worker
         uses: docker/build-push-action@v3
         with:
           context: ./worker
           file: ./worker/Dockerfile
           push: true
-          tags: ghcr.io/martin-trajanovski/multi-k8s-worker:latest
+          tags: |
+            ghcr.io/martin-trajanovski/multi-k8s-worker:latest
+            ghcr.io/martin-trajanovski/multi-k8s-worker:${{ github.sha }}
 
   deploy:
     runs-on: ubuntu-latest
@@ -76,4 +82,7 @@ jobs:
       - id: 'apply-configs-and-get-pods'
         run: |
           kubectl apply -f k8s/
+          kubectl set image deployments/api-deployment api=ghcr.io/martin-trajanovski/multi-k8s-server:${{ github.sha }}
+          kubectl set image deployments/client-deployment client=ghcr.io/martin-trajanovski/multi-k8s-client:${{ github.sha }}
+          kubectl set image deployments/worker-deployment worker=ghcr.io/martin-trajanovski/multi-k8s-worker:${{ github.sha }}
           kubectl get pods
