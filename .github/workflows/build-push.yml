@@ -69,6 +69,7 @@ jobs:
         with:
           cluster_name: ${{ secrets.GKE_CLUSTER }}
           location: ${{ secrets.GKE_ZONE }}
+          project_id: ${{ secrets.GKE_PROJECT }}
 
       # The KUBECONFIG env var is automatically exported and picked up by kubectl.
       - id: 'apply-configs-and-get-pods'
