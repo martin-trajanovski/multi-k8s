@@ -14,7 +14,7 @@ spec:
     spec:
       containers:
         - name: api
-          image: ghcr.io/martin-trajanovski/server:v1.0.1
+          image: ghcr.io/martin-trajanovski/multi-k8s-server
           env:
             - name: REDIS_HOST
               value: redis-cluster-ip-service
