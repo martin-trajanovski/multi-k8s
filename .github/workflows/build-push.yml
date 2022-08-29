@@ -4,11 +4,6 @@ on:
   push:
     branches: [master]
 
-env:
-  GKE_CLUSTER: multi-cluster # Add your cluster name here.
-  GKE_ZONE: europe-north1-a # Add your cluster zone here.
-  DEPLOYMENT_NAME: gke-test # Add your deployment name here.
-
 jobs:
   build:
     runs-on: ubuntu-latest
@@ -72,8 +67,8 @@ jobs:
       - id: 'get-credentials'
         uses: 'google-github-actions/get-gke-credentials@v0'
         with:
-          cluster_name: ${{ env.GKE_CLUSTER }}
-          location: ${{ env.GKE_ZONE }}
+          cluster_name: ${{ secrets.GKE_CLUSTER }}
+          location: ${{ secrets.GKE_ZONE }}
 
       # The KUBECONFIG env var is automatically exported and picked up by kubectl.
       - id: 'get-pods'
